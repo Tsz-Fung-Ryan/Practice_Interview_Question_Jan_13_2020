@@ -1,1 +1,4 @@
-java RecordMerger ..\data\first.html ..\data\second.csv
+Compile
+javac -cp "..\lib\*;." RecordMerger.java
+
+java -cp "..\lib\*;." RecordMerger ..\data\first.html [ ..\data\second.csv [ file3 ] ]
