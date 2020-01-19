@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.google.common.collect.*;
 public class RecordMerger {
 
@@ -15,10 +17,12 @@ public class RecordMerger {
 			System.exit(1);
 		}
 		// your code starts here.
+		
 		final int formula = (args.length+2)/3;
-		Table<Integer, Integer, String>[] tables = new Table[formula];
+		//Table<Integer, Integer, String>[] tables = new Table[formula];
 
-		System.out.println("Number of Files: " + formula);
+		ArrayList <Table<Integer, Integer, String>> tables = new ArrayList<Table<Integer,Integer, String>>()
+;		System.out.println("Number of Files: " + formula);
 		
 		//structure of input is assumed equivalent to error message therefore files will only appear every other argument
 		for (int i = 0; i<args.length; i+=2) {
@@ -26,12 +30,12 @@ public class RecordMerger {
 				System.out.println("Last file detected beginning conversion\n");
 				break;
 			}
-			System.out.println("Converting File: " + args[i]);
+			System.out.println("\nConverting File: " + args[i]);
 
 			//converts the file into a table and adds it to tables
 			FileConverter convertFile = new FileConverter (args[i]);
-			tables[i/2]=convertFile.toTable();
-			testTable(tables[i/2]);
+			tables.add(convertFile.toTable());
+			testTable(tables.get(i/2));
 		}
 	}
 
@@ -68,6 +72,10 @@ public class RecordMerger {
 		return newArg;
 	}
 	
+	/**
+	 * Outputs contents of table into command line
+	 * @param a table with Integer axis and String contents
+	 */
 	private static void testTable(Table<Integer, Integer, String> table) {
 		if(table == null) {
 			System.out.println("Table is empty");

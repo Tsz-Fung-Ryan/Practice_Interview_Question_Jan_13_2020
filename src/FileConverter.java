@@ -37,6 +37,7 @@ public class FileConverter {
 		Table<Integer, Integer, String> table = HashBasedTable.create();
 		switch (fileType) {
 		case "html":
+			System.out.println("html file detected");
 			table = htmlToTable();
 			break;
 		case "csv":
@@ -45,7 +46,7 @@ public class FileConverter {
 			break;
 		}
 		
-		testTable(table);
+		//testTable(table);
 
 		return table;
 	}
@@ -81,7 +82,7 @@ public class FileConverter {
 		Document doc = Jsoup.parse(file, "UTF-8");
 		System.out.println(doc);
 
-		System.out.println("Extracting Table...");
+		System.out.println("\nExtracting Table...");
 		Elements tableElements = doc.select("table");
 		Table<Integer, Integer, String> table = HashBasedTable.create();
 		Elements tableRows = tableElements.select("tr");
@@ -104,10 +105,7 @@ public class FileConverter {
 		return null;
 	}
 
-	/**
-	 * Outputs contents of table into command line
-	 * @param a table with Integer axis and String contents
-	 */
+
 	private void testTable(Table<Integer, Integer, String> table) {
 		if(table == null) {
 			System.out.println("Table is empty");
