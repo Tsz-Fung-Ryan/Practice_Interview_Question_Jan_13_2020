@@ -4,11 +4,12 @@ public class FileConverter {
 
 	boolean fileRead = false;
 	
-	public FileConverter (String name) {
-		File file = new File(name);
-		if(file.canRead()) {
+	public FileConverter (String path) {
+		File fileTest = new File(path);
+		if(fileTest.canRead()) {
 			fileRead = true;
 			System.out.println("File read");
+			
 		}
 		else {
 			fileRead = false;
