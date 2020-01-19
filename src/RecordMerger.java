@@ -21,13 +21,13 @@ public class RecordMerger {
 		final int formula = (args.length+2)/3;
 		//Table<Integer, Integer, String>[] tables = new Table[formula];
 
-		ArrayList <Table<Integer, Integer, String>> tables = new ArrayList<Table<Integer,Integer, String>>()
-;		System.out.println("Number of Files: " + formula);
+		ArrayList <Table<Integer, Integer, String>> tables = new ArrayList<Table<Integer,Integer, String>>();		
+		System.out.println("Number of Files: " + formula);
 		
-		//structure of input is assumed equivalent to error message therefore files will only appear every other argument
+		//Structure of input is assumed equivalent to error message therefore files will only appear every other argument
 		for (int i = 0; i<args.length; i+=2) {
 			if(args[i].equals("]")) {
-				System.out.println("Last file detected beginning conversion\n");
+				System.out.println("Last file detected proceeding to testing\n");
 				break;
 			}
 			System.out.println("\nConverting File: " + args[i]);
@@ -35,7 +35,12 @@ public class RecordMerger {
 			//converts the file into a table and adds it to tables
 			FileConverter convertFile = new FileConverter (args[i]);
 			tables.add(convertFile.toTable());
-			testTable(tables.get(i/2));
+			//testTable(tables.get(i/2)); 
+		}
+		System.out.println("Beginning table tests");
+		for(int i = 0; i<tables.size();i++) {
+			System.out.println("Testing table: "+ i);
+			testTable(tables.get(i));
 		}
 	}
 

@@ -1,13 +1,22 @@
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.BufferedReader;
 
 import com.google.common.collect.Table;
-import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.TreeBasedTable;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+//switched to newest version as I considered using the skip lines function but ultimately didn't use it
+/*import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;*/
+
 
 public class FileConverter {
 
@@ -32,10 +41,17 @@ public class FileConverter {
 	}
 
 	//converts the initialized file to a table
-	public Table<Integer, Integer, String> toTable() throws IOException {
-		String fileType = getFileExtension(file.getName());
-		Table<Integer, Integer, String> table = HashBasedTable.create();
-		switch (fileType) {
+	public Table<Integer, Integer, String> toTable() throws IOException{
+
+		String fileExtension = getFileExtension(file.getName());
+
+		if(fileExtension==null)
+			return null;
+		
+		Table<Integer, Integer, String> table = TreeBasedTable.create();
+		
+		//Sends to corresponding method based on file extension
+		switch (fileExtension) {
 		case "html":
 			System.out.println("html file detected");
 			table = htmlToTable();
@@ -45,13 +61,11 @@ public class FileConverter {
 			table = csvToTable();
 			break;
 		}
-		
+
 		//testTable(table);
 
 		return table;
 	}
-
-
 
 	//Used to check the file extension of the file to ensure proper conversion is used
 	/**
@@ -64,8 +78,7 @@ public class FileConverter {
 		int index = fileName.lastIndexOf(".");
 		if(index == -1) {
 			System.err.println("File Extension Not Found");
-			System.exit(1);
-			return "";
+			return null;
 		}
 		extension = fileName.substring(index+1);
 		return extension;
@@ -84,9 +97,9 @@ public class FileConverter {
 
 		System.out.println("\nExtracting Table...");
 		Elements tableElements = doc.select("table");
-		Table<Integer, Integer, String> table = HashBasedTable.create();
+		Table<Integer, Integer, String> table = TreeBasedTable.create();
 		Elements tableRows = tableElements.select("tr");
-		
+
 		//Inserts html table elements into table
 		for (int row = 0; row < tableRows.size(); row++) {
 			//System.out.println("\nCurrent row is:"+ row);
@@ -99,10 +112,34 @@ public class FileConverter {
 		System.out.println();
 		return table;
 	}
-	
-	private Table<Integer, Integer, String> csvToTable() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Converts
+	 * @return
+	 * @throws CsvValidationException
+	 * @throws IOException
+	 */
+	private Table<Integer, Integer, String> csvToTable() throws IOException {
+		if(fileRead=false) {
+			System.out.println("File could not be read");
+			return null;
+		}
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		CSVReader csvReader = new CSVReader (reader);
+		Table<Integer, Integer, String> table = TreeBasedTable.create();
+		String [] row;
+		
+		for (int i=0;(row = csvReader.readNext()) !=null; i++) { 
+			System.out.println("Row Number: "+ i);
+			for (int j=0; j<row.length;j++) {
+				System.out.print(row [j] + "\t");
+				table.put(i, j, row[j]);
+			}
+			System.out.println();
+		}
+
+		csvReader.close();
+		
+		return table;
 	}
 
 
