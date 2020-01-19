@@ -1,4 +1,5 @@
 Compile
-javac -cp ..\lib\guava-16.0.1.jar; FileConverter.java RecordMerger.java
 
-java -cp "..\lib\*;." RecordMerger ..\data\first.html [ ..\data\second.csv ]
+javac -cp "..\lib\;." RecordMerger.java
+
+java -cp "..\lib\*;." RecordMerger ..\data\first.html [ ..\data\second.csv [ file3 ] ]

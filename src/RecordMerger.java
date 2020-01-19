@@ -1,5 +1,4 @@
 import com.google.common.collect.*;
-import java.nio.file.Path;
 public class RecordMerger {
 
 	public static final String FILENAME_COMBINED = "combined.csv";
@@ -11,20 +10,16 @@ public class RecordMerger {
 	 * @throws Exception bad things had happened.
 	 */
 	public static void main(final String[] args) throws Exception {
-	
-	//test method
-	/*
-	public static void main(final String[] targs) throws Exception {
-		String [] args = {"file1", "[", "file2", "]"};
-	*/	
 		if (args.length == 0) {
 			System.err.println("Usage: java RecordMerger file1 [ file2 [...] ]");
 			System.exit(1);
 		}
 		// your code starts here.
+		final int formula = (args.length+2)/3;
+		Table<Integer, Integer, String>[] tables = new Table[formula];
 
-		Tables[] tables = new Tables[args.length];
-
+		System.out.println("Number of Files: " + formula);
+		
 		//structure of input is assumed equivalent to error message therefore files will only appear every other argument
 		for (int i = 0; i<args.length; i+=2) {
 			if(args[i].equals("]")) {
@@ -32,15 +27,16 @@ public class RecordMerger {
 				break;
 			}
 			System.out.println("Converting File: " + args[i]);
-			
-			Path path = new Path(args[i]);
+
+			//converts the file into a table and adds it to tables
 			FileConverter convertFile = new FileConverter (args[i]);
-			
+			tables[i/2]=convertFile.toTable();
+			testTable(tables[i/2]);
 		}
 	}
 
 	//removing the brackets from the arguments
-	//Files are assumed to have normal filenames meaning 
+	//Files are assumed to have normal filenames
 	public static String[] removeBrackets(String[] args) {
 		System.out.println("Removing Brackets");
 		System.out.println("Length of Args: "+ args.length);
@@ -70,5 +66,17 @@ public class RecordMerger {
 			System.out.print(" "+ newArg[i]);
 		}
 		return newArg;
+	}
+	
+	private static void testTable(Table<Integer, Integer, String> table) {
+		if(table == null) {
+			System.out.println("Table is empty");
+			return;
+		}
+		for(int row=0;row<4;row++) {
+			if(table.row(row).isEmpty())
+				break;
+			System.out.println("Row Number: "+ row + "\t" + table.row(row));
+		}
 	}
 }
