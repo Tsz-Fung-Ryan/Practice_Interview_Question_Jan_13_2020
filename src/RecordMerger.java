@@ -1,9 +1,13 @@
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 import com.google.common.collect.*;
+import com.google.common.collect.Table.Cell;
 public class RecordMerger {
 
 	public static final String FILENAME_COMBINED = "combined.csv";
+	public static final String UNIQUEIDENTIFIER = "ID";
 
 	/**
 	 * Entry point of this test.
@@ -17,13 +21,12 @@ public class RecordMerger {
 			System.exit(1);
 		}
 		// your code starts here.
-		
 		final int formula = (args.length+2)/3;
 		//Table<Integer, Integer, String>[] tables = new Table[formula];
 
-		ArrayList <Table<Integer, Integer, String>> tables = new ArrayList<Table<Integer,Integer, String>>();		
+		ArrayList <Table<Integer, Integer, String>> tables = new ArrayList<Table<Integer, Integer, String>>();		
 		System.out.println("Number of Files: " + formula);
-		
+
 		//Structure of input is assumed equivalent to error message therefore files will only appear every other argument
 		for (int i = 0; i<args.length; i+=2) {
 			if(args[i].equals("]")) {
@@ -34,14 +37,28 @@ public class RecordMerger {
 
 			//converts the file into a table and adds it to tables
 			FileConverter convertFile = new FileConverter (args[i]);
+			if(convertFile.fileReadable()==false)
+				continue;
 			tables.add(convertFile.toTable());
+
 			//testTable(tables.get(i/2)); 
 		}
+		
 		System.out.println("Beginning table tests");
 		for(int i = 0; i<tables.size();i++) {
 			System.out.println("Testing table: "+ i);
-			testTable(tables.get(i));
+			if(tables.get(i).get(0, 0).equals(UNIQUEIDENTIFIER) == false) {
+				tables.set(i, TableTools.fixColumnOrder(tables.get(i)));
+			}
+			TableTools.testTable(tables.get(i));
 		}
+		
+		Table<Integer, Integer, String> mergedTable = TableTools.mergeTable(tables);
+		System.out.println("Testing table");
+		TableTools.testTable(mergedTable);
+		
+		
+
 	}
 
 	//removing the brackets from the arguments
@@ -77,19 +94,6 @@ public class RecordMerger {
 		return newArg;
 	}
 	
-	/**
-	 * Outputs contents of table into command line
-	 * @param a table with Integer axis and String contents
-	 */
-	private static void testTable(Table<Integer, Integer, String> table) {
-		if(table == null) {
-			System.out.println("Table is empty");
-			return;
-		}
-		for(int row=0;row<4;row++) {
-			if(table.row(row).isEmpty())
-				break;
-			System.out.println("Row Number: "+ row + "\t" + table.row(row));
-		}
-	}
+
+
 }

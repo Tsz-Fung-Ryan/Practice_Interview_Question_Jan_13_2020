@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.BufferedReader;
 
 import com.google.common.collect.Table;
@@ -13,6 +12,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import org.apache.commons.io.*;
+
 //switched to newest version as I considered using the skip lines function but ultimately didn't use it
 /*import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;*/
@@ -20,7 +21,7 @@ import com.opencsv.exceptions.CsvValidationException;*/
 
 public class FileConverter {
 
-	boolean fileRead = false;
+	private boolean fileRead = false;
 
 	File file;
 	/**
@@ -43,9 +44,9 @@ public class FileConverter {
 	//converts the initialized file to a table
 	public Table<Integer, Integer, String> toTable() throws IOException{
 
-		String fileExtension = getFileExtension(file.getName());
+		String fileExtension = FilenameUtils.getExtension(file.getName());
 
-		if(fileExtension==null)
+		if(fileExtension==null||fileExtension=="")
 			return null;
 		
 		Table<Integer, Integer, String> table = TreeBasedTable.create();
@@ -66,24 +67,6 @@ public class FileConverter {
 
 		return table;
 	}
-
-	//Used to check the file extension of the file to ensure proper conversion is used
-	/**
-	 * 
-	 * @param the filename/path to the file
-	 * @return returns the file extension
-	 */
-	public String getFileExtension(String fileName) {
-		String extension = "";
-		int index = fileName.lastIndexOf(".");
-		if(index == -1) {
-			System.err.println("File Extension Not Found");
-			return null;
-		}
-		extension = fileName.substring(index+1);
-		return extension;
-	}
-
 
 	/**
 	 * Creates a table using instantiated file
@@ -129,7 +112,6 @@ public class FileConverter {
 		String [] row;
 		
 		for (int i=0;(row = csvReader.readNext()) !=null; i++) { 
-			System.out.println("Row Number: "+ i);
 			for (int j=0; j<row.length;j++) {
 				System.out.print(row [j] + "\t");
 				table.put(i, j, row[j]);
@@ -142,16 +124,7 @@ public class FileConverter {
 		return table;
 	}
 
-
-	private void testTable(Table<Integer, Integer, String> table) {
-		if(table == null) {
-			System.out.println("Table is empty");
-			return;
-		}
-		for(int row=0;row<4;row++) {
-			if(table.row(row).isEmpty())
-				break;
-			System.out.println("Row Number: "+ row + "\t" + table.row(row));
-		}
+	public boolean fileReadable() {
+		return fileRead;
 	}
 }
