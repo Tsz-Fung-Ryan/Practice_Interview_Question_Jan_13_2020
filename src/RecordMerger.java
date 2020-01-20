@@ -24,7 +24,7 @@ public class RecordMerger {
 		final int formula = (args.length+2)/3;
 		//Table<Integer, Integer, String>[] tables = new Table[formula];
 
-		ArrayList <Table<Integer, Integer, String>> tables = new ArrayList<Table<Integer, Integer, String>>();		
+		ArrayList<Table<Integer, String, String>> tables = new ArrayList<Table<Integer, String, String>>();		
 		System.out.println("Number of Files: " + formula);
 
 		//Structure of input is assumed equivalent to error message therefore files will only appear every other argument
@@ -47,22 +47,26 @@ public class RecordMerger {
 		System.out.println("Beginning table tests");
 		for(int i = 0; i<tables.size();i++) {
 			System.out.println("Testing table: "+ i);
-			if(tables.get(i).get(0, 0).equals(UNIQUEIDENTIFIER) == false) {
-				tables.set(i, TableTools.fixColumnOrder(tables.get(i)));
-			}
 			TableTools.testTable(tables.get(i));
 		}
 		
-		Table<Integer, Integer, String> mergedTable = TableTools.mergeTable(tables);
-		System.out.println("Testing table");
+		Table<Integer, String, String> mergedTable = TableTools.mergeAndSortTable(tables);
+		System.out.println("Testing merged table");
 		TableTools.testTable(mergedTable);
 		
+		System.out.println("Writing to csv file");
 		
+		TableTools.writeToCsv(mergedTable, FILENAME_COMBINED);
 
 	}
 
 	//removing the brackets from the arguments
 	//Files are assumed to have normal filenames
+	/**
+	 * 
+	 * @param args
+	 * @return
+	 */
 	public static String[] removeBrackets(String[] args) {
 		System.out.println("Removing Brackets");
 		System.out.println("Length of Args: "+ args.length);
@@ -77,6 +81,12 @@ public class RecordMerger {
 
 		return args;
 	}
+	/**
+	 * Recursive case for bracket removal
+	 * @param arg
+	 * @param index
+	 * @return
+	 */
 	private static String[] removeBracket(String [] arg, int index) {
 		String[] newArg = new String[arg.length-1];
 		for (int i = 0; i<newArg.length; i++)
@@ -94,6 +104,4 @@ public class RecordMerger {
 		return newArg;
 	}
 	
-
-
 }

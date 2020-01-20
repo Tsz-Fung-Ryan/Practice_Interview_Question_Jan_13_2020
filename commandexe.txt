@@ -1,4 +1,7 @@
 Compile
 javac -cp "..\lib\*;." RecordMerger.java
 
+Run Tests
 java -cp "..\lib\*;." RecordMerger ..\data\first.html [ ..\data\second.csv [ file3 ] ]
+java -cp "..\lib\*;." RecordMerger ..\data\second.csv [ ..\data\first.html [ file3 ] ]
+java -cp "..\lib\*;." RecordMerger ..\data\third.csv [ ..\data\first.html [ ..\data\second.csv ] ]
