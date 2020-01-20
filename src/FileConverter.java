@@ -73,6 +73,8 @@ public class FileConverter {
 	 * @throws IOException 
 	 */
 	private Table<Integer, String, String> htmlToTable() throws IOException {
+		BufferedReader reader = new BufferedReader (new FileReader(file));
+		
 		Document doc = Jsoup.parse(file, "UTF-8");
 		System.out.println(doc);
 
